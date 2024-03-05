@@ -29,5 +29,5 @@ class Admin extends User {
 const admin1 = new Admin('admin', '');
 console.log(admin1);
 
-const admin2 = new Admin('Aleg', '');
+const admin2 = new Admin('Oleg', '');
 console.log(admin2);
