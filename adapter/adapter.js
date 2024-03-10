@@ -26,8 +26,30 @@ class Admin extends User {
   }
 }
 
-const admin1 = new Admin('admin', '');
-console.log(admin1);
+class UserCreator {
+  static userList = {
+    user: User,
+    editor: Editor,
+    admin: Admin,
+  };
+  static createUser(login, email, role = 'user') {
+    const Fabric = UserCreator.userList[role];
 
-const admin2 = new Admin('Oleg', '');
-console.log(admin2);
+    const instance = new Fabric(login, email);
+    instance.role = role;
+
+    return instance;
+  }
+}
+
+class UserAdapter {
+  static create(login, email, role = 'user') {
+    return UserCreator.createUser(login, email, role);
+  }
+}
+
+const user1 = UserAdapter.create('Bruce', 'b@mail.com');
+console.log(user1);
+
+const admin1 = UserAdapter.create('Bob', 'bob@mail.com', 'admin');
+console.log(admin1);
