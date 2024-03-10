@@ -1,55 +1,57 @@
-class User {
-  constructor(login, email) {
+class Post {
+  constructor(title, subtitle) {
+    this.title = title;
+    this.subtitle = subtitle;
+  }
+}
+
+class Editor {
+  #observers = [];
+
+  constructor(login, role = 'editor') {
     this.login = login;
-    this.email = email;
+    this.role = role;
+    this.posts = [];
   }
-}
-
-class Editor extends User {
-  constructor(login, email) {
-    super(login, email);
+  createPost(title, subtitle) {
+    const post = new Post(title, subtitle);
+    this.posts.push(post);
+    this.notify(post);
   }
-  createPost(title, text) {}
-}
 
-class Admin extends User {
-  static exist = false;
-  static instance = null;
+  attach(observer) {
+    const isExist = this.#observers.includes(observer);
 
-  constructor(login, email) {
-    if (Admin.exist) {
-      return;
+    if (isExist) return;
+
+    this.#observers.push(observer);
+    console.log('Editor: Attached an observer');
+  }
+
+  detach(observer) {
+    const observerIndex = this.#observers.indexOf(observer);
+    if (observerIndex === -1) {
+      return console.log('Observer was not found');
     }
-    super(login, email);
-    Admin.exist = true;
-    Admin.instance = this;
+    this.#observers.splice(observerIndex, 1);
+    console.log('Editor: Detached an observer');
+  }
+
+  notify(post) {
+    for (const observer of this.#observers) {
+      observer.update(this.login + ' published a post ' + JSON.stringify(post));
+    }
   }
 }
 
-class UserCreator {
-  static userList = {
-    user: User,
-    editor: Editor,
-    admin: Admin,
-  };
-  static createUser(login, email, role = 'user') {
-    const Fabric = UserCreator.userList[role];
-
-    const instance = new Fabric(login, email);
-    instance.role = role;
-
-    return instance;
+class Admin {
+  constructor(login, role = 'admin') {
+    this.login = login;
+    this.role = role;
+  }
+  update(subject) {
+    console.log(subject);
   }
 }
-
-class UserAdapter {
-  static create(login, email, role = 'user') {
-    return UserCreator.createUser(login, email, role);
-  }
-}
-
-const user1 = UserAdapter.create('Bruce', 'b@mail.com');
-console.log(user1);
-
-const admin1 = UserAdapter.create('Bob', 'bob@mail.com', 'admin');
-console.log(admin1);
+const editor1 = new Editor('Thor');
+console.log(editor1);
