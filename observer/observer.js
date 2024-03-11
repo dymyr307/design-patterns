@@ -54,4 +54,14 @@ class Admin {
   }
 }
 const editor1 = new Editor('Thor');
+const editor2 = new Editor('Loki');
+const admin = new Admin('Odin');
+
 console.log(editor1);
+console.log(editor2);
+console.log(admin);
+
+editor1.attach(admin);
+editor2.attach(admin);
+
+editor1.createPost('I like Earth', 'Very Much');
